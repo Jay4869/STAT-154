@@ -10,12 +10,16 @@ def pre_proccessing(fname, word):
     regx = re.compile('[%s]'%re.escape(string.punctuation))
     # loading each file
     for f in fname:
-        # print(f)
         files = open(f, 'r')
+        print("there is bug file", f)
         # loading each line for oen file 
-        for i in files:
-            # store all words in temp in 1D list
-            temp = temp + regx.sub('', i.replace('\n', '').lower()).split(' ')
+        try:
+            for i in files:
+                # store all words in temp in 1D list
+                temp = temp + regx.sub('', i.replace('\n', '').lower()).split(' ')
+        except UnicodeDecodeError:
+            print(f)
+            pass
         # store all words in data in mult-dimssion splits by files
         temp = [x for x in temp if x != '']
         data.append(temp)
@@ -52,5 +56,5 @@ if __name__ == '__main__':
     common_word = open('common_word.txt', 'r')
     for j in common_word:
         word = word + j.replace(',',' ').split(' ')
-    #print(filename[6229:6231])
     table = pre_proccessing(filename, word)
+
