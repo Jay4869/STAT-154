@@ -60,9 +60,7 @@ dim(childs)
 freq = colSums(as.matrix(childs))
 length(freq)
 
-a = boxplot(freq)
-best_words_child = names(freq[which(freq >= a$stats[2] & freq <= a$stats[4])]) #get middle of low and high bound
-length(best_words_child)
+
 
 #--------------------------------------------------------------------------------------
 filename = file.path("E:", "GitHub", "machine_learning", "History(1)")
