@@ -17,21 +17,27 @@ library(ppls)
 data = Corpus(DirSource(filename))
 data = tm_map(data, removeWords, common)
 
-dtm.weighted2 <- DocumentTermMatrix(data,
+dtm.weighted = DocumentTermMatrix(data,
                                    control = list(weighting = function(x) weightTfIdf(x, normalize = TRUE),
                                                   stopwords = TRUE, tolower = TRUE, removePunctuation = TRUE, 
-                                                  stemming=TRUE, stripWhitespace = TRUE, PlainTextDocument = TRUE))
-dtms = removeSparseTerms(dtm.weighted2, 0.95)
+                                                  stemming=TRUE))
+dtms = removeSparseTerms(dtm.weighted, 0.95)
 dim(dtms)
 
 freq = colSums(as.matrix(dtms))
 length(freq)
 
 a = boxplot(freq)
-best_words = names(freq[which(freq >= a$stats[2] & freq <= a$stats[4])])
+best_words = names(freq[which(freq >= a$stats[2] & freq <= a$stats[4])]) #get middle of low and high bound
 length(best_words)
+best_words = best_words[-c(1524, 1525)] #remove "wwwgutenbergnet" "wwwgutenbergorg"
 
 write.table(best_words, "best_words.txt", sep='\n')
+
+table = as.matrix(dtms)
+dim(table)
+word.mat = table[,best_words]
+write.csv(word.mat, file="word_matrix.csv")
 
 #freq.s = normalize.vector(freq)
 #CI = c(mean(freq.s) - sd(freq.s)/sqrt(3068), mean(freq.s) + sd(freq.s)/sqrt(3068))
