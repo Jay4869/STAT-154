@@ -260,3 +260,37 @@ power_table = cbind(power_table, y)
 write.csv(power_table, file="power_matrix.csv")
 
 data_table = read.table('word_matrix.csv', header = T)
+
+#------------------------------------------------------------
+library(NLP)
+library(tm)
+library(SnowballC)
+library(NLP)
+library(tm)
+library(splines)
+library(MASS)
+library(ppls)
+
+filename = file.path("E:", "GitHub", "machine_learning", "Practice")
+dir(filename)
+setwd("E:/GitHub/machine_learning")
+
+processing = function(filename)
+{
+  common = scan('common_word.txt', what='', sep=',')
+  train = Corpus(DirSource(filename))
+  train = tm_map(train, removeWords, common)
+  train = tm_map(train, removeWords, c('project', 'gutenbergtm'))
+  
+  train.weighted = DocumentTermMatrix(train,
+                                        control = list(weighting = function(x) weightTfIdf(x, normalize = TRUE),
+                                                       stopwords = TRUE, tolower = TRUE, removePunctuation = TRUE, 
+                                                       stemming=TRUE))
+  table = as.matrix(train.weighted)
+  write.csv(table, file="train_200_matrix.csv")
+  
+  return(table)
+}
+
+train.mat = processing(filename)
+dim(train.mat)
